@@ -257,11 +257,13 @@ public class Controller implements AsyncProcessor {
     private boolean injectTouch(int action, long pointerId, Position position, float pressure, int actionButton, int buttons) {
         long now = SystemClock.uptimeMillis();
 
-        Point point = device.getPhysicalPoint(position);
-        if (point == null) {
-            Ln.w("Ignore touch event, it was generated for a different device size");
-            return false;
-        }
+//        Point point = device.getPhysicalPoint(position);
+//        if (point == null) {
+//            Ln.w("Ignore touch event, it was generated for a different device size");
+//            return false;
+//        }
+        // the point of touch msg is the physical pointer in scrcpy-mask
+        Point point = position.getPoint();
 
         int pointerIndex = pointersState.getPointerIndex(pointerId);
         if (pointerIndex == -1) {
