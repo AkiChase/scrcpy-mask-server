@@ -6,13 +6,29 @@ public final class DeviceMessage {
     public static final int TYPE_ACK_CLIPBOARD = 1;
     public static final int TYPE_UHID_OUTPUT = 2;
 
+    // scrcpy-mask: device rotation message
+    public static final int TYPE_SM_ROTATION = 3;
+
     private int type;
     private String text;
     private long sequence;
     private int id;
     private byte[] data;
 
+    private int rotation;
+    private int width;
+    private int height;
+
     private DeviceMessage() {
+    }
+
+    public static DeviceMessage createRotation(int rotation, Size size) {
+        DeviceMessage event = new DeviceMessage();
+        event.type = TYPE_SM_ROTATION;
+        event.rotation = rotation;
+        event.width = size.getWidth();
+        event.height = size.getHeight();
+        return event;
     }
 
     public static DeviceMessage createClipboard(String text) {
@@ -55,5 +71,17 @@ public final class DeviceMessage {
 
     public byte[] getData() {
         return data;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

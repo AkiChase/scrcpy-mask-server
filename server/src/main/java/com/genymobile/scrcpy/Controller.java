@@ -257,12 +257,7 @@ public class Controller implements AsyncProcessor {
     private boolean injectTouch(int action, long pointerId, Position position, float pressure, int actionButton, int buttons) {
         long now = SystemClock.uptimeMillis();
 
-//        Point point = device.getPhysicalPoint(position);
-//        if (point == null) {
-//            Ln.w("Ignore touch event, it was generated for a different device size");
-//            return false;
-//        }
-        // the point of touch msg is the physical pointer in scrcpy-mask
+        // scrcpy-mask: the point of touch msg is the physical pointer
         Point point = position.getPoint();
 
         int pointerIndex = pointersState.getPointerIndex(pointerId);
@@ -366,11 +361,9 @@ public class Controller implements AsyncProcessor {
 
     private boolean injectScroll(Position position, float hScroll, float vScroll, int buttons) {
         long now = SystemClock.uptimeMillis();
-        Point point = device.getPhysicalPoint(position);
-        if (point == null) {
-            // ignore event
-            return false;
-        }
+
+        // scrcpy-mask: the point of touch msg is the physical pointer
+        Point point = position.getPoint();
 
         MotionEvent.PointerProperties props = pointerProperties[0];
         props.id = 0;

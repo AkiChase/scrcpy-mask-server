@@ -17,6 +17,12 @@ public class DeviceMessageWriter {
         buffer.clear();
         buffer.put((byte) msg.getType());
         switch (msg.getType()) {
+            case DeviceMessage.TYPE_SM_ROTATION:
+                buffer.putShort((short) msg.getRotation());
+                buffer.putInt(msg.getWidth());
+                buffer.putInt(msg.getHeight());
+                output.write(rawBuffer, 0, buffer.position());
+                break;
             case DeviceMessage.TYPE_CLIPBOARD:
                 String text = msg.getText();
                 byte[] raw = text.getBytes(StandardCharsets.UTF_8);

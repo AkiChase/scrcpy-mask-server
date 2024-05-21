@@ -133,6 +133,20 @@ public final class Server {
             if (control) {
                 ControlChannel controlChannel = connection.getControlChannel();
                 Controller controller = new Controller(device, controlChannel, cleanUp, options.getClipboardAutosync(), options.getPowerOn());
+
+                // scrcpy-mask: send device size and rotation when connected
+                controller.getSender().send(DeviceMessage.createRotation(
+                        device.originalRotation,
+                        device.getDeviceSizeWithRotation(device.originalRotation))
+                );
+
+                // scrcpy-mask: add RotationListener for control socket
+                device.setRotationListener(rotation -> {
+                    Size size = device.getDeviceSizeWithRotation(rotation);
+                    DeviceMessage msg = DeviceMessage.createRotation(rotation, size);
+                    controller.getSender().send(msg);
+                });
+
                 device.setClipboardListener(text -> {
                     DeviceMessage msg = DeviceMessage.createClipboard(text);
                     controller.getSender().send(msg);

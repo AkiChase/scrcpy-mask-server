@@ -7,5 +7,5 @@ build/
 .gradle/
 /x/
 local.properties
-/scrcpy-server
+/scrcpy-mask-server-v2.4
 .DS_Store
