@@ -173,6 +173,7 @@ public final class Device {
 
     // scrcpy-mask get device size according to rotation
     public Size getDeviceSizeWithRotation(int rotation) {
+        rotation += this.originalRotation; // deviceSize is related to originalRotation
         if (rotation % 2 == 0) {
             // vertical
             return new Size(deviceSize.getWidth(), deviceSize.getHeight());
