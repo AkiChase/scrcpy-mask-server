@@ -1,14 +1,14 @@
 # scrcpy-mask-server
 
-scrcpy-mask-server 是在开源项目 scrcpy
-基础上进行修改和扩展的一个分支项目，旨在更好地适应 [Scrcpy Mask](https://github.com/AkiChase/scrcpy-mask)
-的功能，增强与设备交互的灵活性和实时性。
+scrcpy-mask-server 是在开源项目 scrcpy 基础上进行修改和扩展的一个分支项目，旨在更好地适应 [Scrcpy Mask](https://github.com/AkiChase/scrcpy-mask) 的功能，增强与设备交互的灵活性和实时性。
 
 本人对其 scrcpy-server 部分进行了如下修改：
 
 1. 移除了 `injectTouch` 和 `injectScroll` 中坐标相对视频帧尺寸的转换。
 2. 在 control socket 连接成功后发送设备尺寸。
 3. 在 control socket 中发送设备旋转通知。
+
+本分支项目不会跟随 scrcpy 的版本进行同步更新，因为其最新的更新内容与本项目的目标关联不大，且同步更新会消耗大量精力。
 
 ## 声明
 
@@ -23,7 +23,7 @@ Scrcpy 项目地址：[Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
 ### 移除坐标转换
 
-我们移除了 `injectTouch` 和 `injectScroll` 中坐标相对视频帧尺寸的转换逻辑。这一改动可以使得输入坐标直接对应设备的实际屏幕坐标。
+我们移除了 `injectTouch` 和 `injectScroll` 对屏幕尺寸的验证逻辑，从而使输入事件的处理更加灵活。
 
 ### 发送设备尺寸
 

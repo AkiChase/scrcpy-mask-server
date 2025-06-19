@@ -10,6 +10,8 @@ The following modifications have been made to the scrcpy-server part:
 2. Sending device dimensions after successful control socket connection.
 3. Sending device rotation notifications through the control socket.
 
+This fork does not track scrcpy’s version updates, as the recent changes are not closely related to the goals of this project, and keeping it in sync would require significant effort.
+
 ## Disclaimer
 
 First and foremost, we would like to express our deep respect and gratitude to the original developers of the Scrcpy project. Scrcpy is a powerful and efficient open-source tool that greatly facilitates the control and display of Android devices.
@@ -22,7 +24,7 @@ Scrcpy project repository: [Genymobile/scrcpy](https://github.com/Genymobile/scr
 
 ### Removal of Coordinate Transformation
 
-We removed the logic of coordinate transformations relative to the video frame size in `injectTouch` and `injectScroll`. This change allows input coordinates to directly correspond to the actual screen coordinates of the device.
+We removed the screen size validation logic from `injectTouch` and `injectScroll`, making input event handling more flexible.
 
 ### Sending Device Dimensions
 
