@@ -49,7 +49,9 @@ public final class Device {
     private int maxSize;
     private final int lockVideoOrientation;
 
-    public final int originalRotation;
+    // scrcpy-mask used attribute
+    public final int smOriginalRotation;
+    public RotationListener smRotationListener;
 
     private Size deviceSize;
     private ScreenInfo screenInfo;
@@ -80,7 +82,7 @@ public final class Device {
 
         int displayInfoFlags = displayInfo.getFlags();
 
-        originalRotation = displayInfo.getRotation();
+        smOriginalRotation = displayInfo.getRotation();
         deviceSize = displayInfo.getSize();
         crop = options.getCrop();
         maxSize = options.getMaxSize();
@@ -98,6 +100,7 @@ public final class Device {
                     // notify
                     if (rotationListener != null) {
                         rotationListener.onRotationChanged(rotation);
+                        smRotationListener.onRotationChanged(rotation);
                     }
                 }
             }
@@ -173,7 +176,7 @@ public final class Device {
 
     // scrcpy-mask get device size according to rotation
     public Size getDeviceSizeWithRotation(int rotation) {
-        rotation += this.originalRotation; // deviceSize is related to originalRotation
+        rotation += this.smOriginalRotation; // deviceSize is related to originalRotation
         if (rotation % 2 == 0) {
             // vertical
             return new Size(deviceSize.getWidth(), deviceSize.getHeight());

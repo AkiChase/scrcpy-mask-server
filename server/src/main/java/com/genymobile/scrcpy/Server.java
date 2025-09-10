@@ -136,12 +136,12 @@ public final class Server {
 
                 // scrcpy-mask: send device size and rotation when connected
                 controller.getSender().send(DeviceMessage.createRotation(
-                        device.originalRotation,
-                        device.getDeviceSizeWithRotation(device.originalRotation))
+                        device.smOriginalRotation,
+                        device.getDeviceSizeWithRotation(device.smOriginalRotation))
                 );
 
                 // scrcpy-mask: add RotationListener for control socket
-                device.setRotationListener(rotation -> {
+                device.smRotationListener = (rotation -> {
                     Size size = device.getDeviceSizeWithRotation(rotation);
                     DeviceMessage msg = DeviceMessage.createRotation(rotation, size);
                     controller.getSender().send(msg);
