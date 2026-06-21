@@ -9,3 +9,4 @@ build/
 local.properties
 /scrcpy-mask-server-v2.4
 .DS_Store
+local/

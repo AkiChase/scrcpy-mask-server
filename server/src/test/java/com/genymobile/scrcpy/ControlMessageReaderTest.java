@@ -286,24 +286,24 @@ public class ControlMessageReaderTest {
     }
 
     @Test
-    public void testParseSetScreenPowerMode() throws IOException {
+    public void testParseSetDisplayPower() throws IOException {
         ControlMessageReader reader = new ControlMessageReader();
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(bos);
-        dos.writeByte(ControlMessage.TYPE_SET_SCREEN_POWER_MODE);
-        dos.writeByte(Device.POWER_MODE_NORMAL);
+        dos.writeByte(ControlMessage.TYPE_SET_DISPLAY_POWER);
+        dos.writeBoolean(true);
 
         byte[] packet = bos.toByteArray();
 
         // The message type (1 byte) does not count
-        Assert.assertEquals(ControlMessageReader.SET_SCREEN_POWER_MODE_PAYLOAD_LENGTH, packet.length - 1);
+        Assert.assertEquals(ControlMessageReader.SET_DISPLAY_POWER_PAYLOAD_LENGTH, packet.length - 1);
 
         reader.readFrom(new ByteArrayInputStream(packet));
         ControlMessage event = reader.next();
 
-        Assert.assertEquals(ControlMessage.TYPE_SET_SCREEN_POWER_MODE, event.getType());
-        Assert.assertEquals(Device.POWER_MODE_NORMAL, event.getAction());
+        Assert.assertEquals(ControlMessage.TYPE_SET_DISPLAY_POWER, event.getType());
+        Assert.assertTrue(event.getOn());
     }
 
     @Test

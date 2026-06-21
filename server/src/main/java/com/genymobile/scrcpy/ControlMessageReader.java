@@ -12,7 +12,7 @@ public class ControlMessageReader {
     static final int INJECT_TOUCH_EVENT_PAYLOAD_LENGTH = 31;
     static final int INJECT_SCROLL_EVENT_PAYLOAD_LENGTH = 20;
     static final int BACK_OR_SCREEN_ON_LENGTH = 1;
-    static final int SET_SCREEN_POWER_MODE_PAYLOAD_LENGTH = 1;
+    static final int SET_DISPLAY_POWER_PAYLOAD_LENGTH = 1;
     static final int GET_CLIPBOARD_LENGTH = 1;
     static final int SET_CLIPBOARD_FIXED_PAYLOAD_LENGTH = 9;
     static final int UHID_CREATE_FIXED_PAYLOAD_LENGTH = 4;
@@ -79,8 +79,8 @@ public class ControlMessageReader {
             case ControlMessage.TYPE_SET_CLIPBOARD:
                 msg = parseSetClipboard();
                 break;
-            case ControlMessage.TYPE_SET_SCREEN_POWER_MODE:
-                msg = parseSetScreenPowerMode();
+            case ControlMessage.TYPE_SET_DISPLAY_POWER:
+                msg = parseSetDisplayPower();
                 break;
             case ControlMessage.TYPE_EXPAND_NOTIFICATION_PANEL:
             case ControlMessage.TYPE_EXPAND_SETTINGS_PANEL:
@@ -213,12 +213,12 @@ public class ControlMessageReader {
         return ControlMessage.createSetClipboard(sequence, text, paste);
     }
 
-    private ControlMessage parseSetScreenPowerMode() {
-        if (buffer.remaining() < SET_SCREEN_POWER_MODE_PAYLOAD_LENGTH) {
+    private ControlMessage parseSetDisplayPower() {
+        if (buffer.remaining() < SET_DISPLAY_POWER_PAYLOAD_LENGTH) {
             return null;
         }
-        int mode = buffer.get();
-        return ControlMessage.createSetScreenPowerMode(mode);
+        boolean on = buffer.get() != 0;
+        return ControlMessage.createSetDisplayPower(on);
     }
 
     private ControlMessage parseUhidCreate() {

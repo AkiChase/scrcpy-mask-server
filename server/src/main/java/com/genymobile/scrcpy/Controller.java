@@ -187,16 +187,16 @@ public class Controller implements AsyncProcessor {
             case ControlMessage.TYPE_SET_CLIPBOARD:
                 setClipboard(msg.getText(), msg.getPaste(), msg.getSequence());
                 break;
-            case ControlMessage.TYPE_SET_SCREEN_POWER_MODE:
+            case ControlMessage.TYPE_SET_DISPLAY_POWER:
                 if (device.supportsInputEvents()) {
-                    int mode = msg.getAction();
+                    boolean on = msg.getOn();
+                    int mode = on ? Device.POWER_MODE_NORMAL : Device.POWER_MODE_OFF;
                     boolean setPowerModeOk = Device.setScreenPowerMode(mode);
                     if (setPowerModeOk) {
-                        keepPowerModeOff = mode == Device.POWER_MODE_OFF;
-                        Ln.i("Device screen turned " + (mode == Device.POWER_MODE_OFF ? "off" : "on"));
+                        keepPowerModeOff = !on;
+                        Ln.i("Device screen turned " + (on ? "on" : "off"));
                         if (cleanUp != null) {
-                            boolean mustRestoreOnExit = mode != Device.POWER_MODE_NORMAL;
-                            cleanUp.setRestoreNormalPowerMode(mustRestoreOnExit);
+                            cleanUp.setRestoreNormalPowerMode(!on);
                         }
                     }
                 }
