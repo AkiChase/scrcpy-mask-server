@@ -1,16 +1,17 @@
 package com.genymobile.scrcpy.wrappers;
 
-import com.genymobile.scrcpy.Ln;
+import com.genymobile.scrcpy.AndroidVersions;
+import com.genymobile.scrcpy.util.Ln;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.IBinder;
+import android.system.Os;
 
 import java.lang.reflect.Method;
 
 @SuppressLint({"PrivateApi", "SoonBlockedPrivateApi", "BlockedPrivateApi"})
-@TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@TargetApi(AndroidVersions.API_34_ANDROID_14)
 public final class DisplayControl {
 
     private static final Class<?> CLASS;
@@ -21,7 +22,9 @@ public final class DisplayControl {
             Class<?> classLoaderFactoryClass = Class.forName("com.android.internal.os.ClassLoaderFactory");
             Method createClassLoaderMethod = classLoaderFactoryClass.getDeclaredMethod("createClassLoader", String.class, String.class, String.class,
                     ClassLoader.class, int.class, boolean.class, String.class);
-            ClassLoader classLoader = (ClassLoader) createClassLoaderMethod.invoke(null, "/system/framework/services.jar", null, null,
+
+            String systemServerClasspath = Os.getenv("SYSTEMSERVERCLASSPATH");
+            ClassLoader classLoader = (ClassLoader) createClassLoaderMethod.invoke(null, systemServerClasspath, null, null,
                     ClassLoader.getSystemClassLoader(), 0, true, null);
 
             displayControlClass = classLoader.loadClass("com.android.server.display.DisplayControl");
