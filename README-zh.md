@@ -2,13 +2,13 @@
 
 scrcpy-mask-server 是在开源项目 scrcpy 基础上进行修改和扩展的一个分支项目，旨在更好地适应 [Scrcpy Mask](https://github.com/AkiChase/scrcpy-mask) 的功能，增强与设备交互的灵活性和实时性。
 
-本人对其 scrcpy-server 部分进行了如下修改：
+当前仓库以 scrcpy server `v4.0` 源码作为上游基线，并在其上保留以下改动：
 
-1. 移除了 `injectTouch` 和 `injectScroll` 中坐标相对视频帧尺寸的转换。
-2. 在 control socket 连接成功后发送设备尺寸。
-3. 在 control socket 中发送设备旋转通知。
+1. control 通道里的指针坐标按物理显示坐标处理，不按视频帧坐标处理。
+2. control 启用时，通过 control socket 发送显示尺寸和旋转。
+3. 显示旋转或尺寸变化时，通过 control socket 发送通知。
 
-本分支项目不会跟随 scrcpy 的版本进行同步更新，因为其最新的更新内容与本项目的目标关联不大，且同步更新会消耗大量精力。
+这些改动是 Scrcpy Mask 的协议需求：Scrcpy Mask 可能不启用视频连接，此时客户端不知道视频帧尺寸，因此 control 消息中的 `Position.screenSize` 会被有意解释为从 control 通道收到的设备/显示尺寸。
 
 ## 声明
 
@@ -21,18 +21,25 @@ Scrcpy 项目地址：[Genymobile/scrcpy](https://github.com/Genymobile/scrcpy)
 
 ## 修改详情
 
-### 移除坐标转换
+### control 坐标
 
-我们移除了 `injectTouch` 和 `injectScroll` 对屏幕尺寸的验证逻辑，从而使输入事件的处理更加灵活。
+scrcpy v4.0 默认会把指针事件从视频帧坐标映射到设备/显示坐标。Scrcpy Mask 在 control 消息中绕过这层映射：`injectTouch` 和 `injectScroll` 会直接把 `Position.point` 当作物理显示坐标使用。
 
-### 发送设备尺寸
+### 发送显示尺寸
 
-在 control socket 连接成功后，Scrcpy Mask 会立即发送设备的屏幕尺寸。这可以帮助客户端在初始化时获得设备的具体尺寸信息，从而进行更精准的交互处理。
+当 control 对真实显示启用时，server 会通过 control socket 发送当前显示的宽、高和旋转。这样即使视频关闭，客户端也能初始化指针缩放。
 
 ### 设备旋转通知
 
-Scrcpy Mask 增加了在设备旋转时，通过 control socket
-发送旋转通知的功能。这样可以使客户端实时感知设备的旋转变化，及时调整显示和交互逻辑，提供更好的用户体验。
+Scrcpy Mask 增加了在显示旋转或尺寸变化时，通过 control socket 发送显示属性通知的功能。这样可以使客户端实时感知变化，及时调整显示和交互逻辑。
+
+## 构建
+
+```sh
+bash build-server.sh
+```
+
+构建产物为 `./scrcpy-mask-server-v4.0`。
 
 ## 许可
 

@@ -4,13 +4,13 @@
 
 scrcpy-mask-server is a fork project based on the open-source project scrcpy, aiming to better adapt to the functionality of [Scrcpy Mask](https://github.com/AkiChase/scrcpy-mask) by enhancing flexibility and real-time interaction with devices.
 
-The following modifications have been made to the scrcpy-server part:
+This repository currently uses the scrcpy server `v4.0` source as its upstream baseline. The following modifications are applied on top of it:
 
-1. Removal of coordinate transformations relative to the video frame size in `injectTouch` and `injectScroll`.
-2. Sending device dimensions after successful control socket connection.
-3. Sending device rotation notifications through the control socket.
+1. Control-channel pointer coordinates are treated as physical display coordinates, not video-frame coordinates.
+2. The server sends display dimensions and rotation through the control socket when control is enabled.
+3. Display rotation/size changes are reported through the control socket.
 
-This fork does not track scrcpy’s version updates, as the recent changes are not closely related to the goals of this project, and keeping it in sync would require significant effort.
+These changes are required because Scrcpy Mask may run without a video connection. In that mode, the client does not know the video frame size, so `Position.screenSize` in control messages is intentionally interpreted as the device/display size received from the control channel.
 
 ## Disclaimer
 
@@ -22,17 +22,25 @@ Scrcpy project repository: [Genymobile/scrcpy](https://github.com/Genymobile/scr
 
 ## Modification Details
 
-### Removal of Coordinate Transformation
+### Control Coordinates
 
-We removed the screen size validation logic from `injectTouch` and `injectScroll`, making input event handling more flexible.
+scrcpy v4.0 normally maps pointer events from video-frame coordinates to device/display coordinates. Scrcpy Mask bypasses that mapping for control messages: `injectTouch` and `injectScroll` use the raw `Position.point` as a physical display coordinate.
 
-### Sending Device Dimensions
+### Display Dimensions
 
-After the control socket connection is successful, Scrcpy Mask immediately sends the screen dimensions of the device. This helps the client to obtain specific device dimensions during initialization for more precise interaction handling.
+When control is enabled for a real display, the server sends the current display width, height, and rotation over the control socket. This lets the client initialize pointer scaling even when video is disabled.
 
 ### Device Rotation Notification
 
-Scrcpy Mask adds the functionality to send rotation notifications through the control socket when the device rotates. This allows the client to perceive device rotation changes in real-time and adjust display and interaction logic promptly, providing a better user experience.
+Scrcpy Mask adds the functionality to send display property notifications through the control socket when the display rotates or its size changes. This allows the client to adjust display and interaction logic promptly.
+
+## Build
+
+```sh
+bash build-server.sh
+```
+
+The build output is `./scrcpy-mask-server-v4.0`.
 
 ## License
 
